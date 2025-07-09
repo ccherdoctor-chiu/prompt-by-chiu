@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM 提示語大全 - 顯微鏡：AI教學在EMS的應用與發展</title>
+    <style>
+        /* --- General Styles & Resets --- */
+        :root {
+            --primary-color: #005A9C; /* 專業藍 */
+            --secondary-color: #003F6E; /* 深藍 */
+            --accent-color: #E87722; /* 亮橘 */
+            --bg-color: #f8f9fa; /* 淺灰背景 */
+            --text-color: #343a40; /* 主要文字顏色 */
+            --light-gray: #e9ecef;
+            --white: #ffffff;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', 'Arial', 'Heiti TC', 'Microsoft JhengHei', sans-serif;
+            line-height: 1.7;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1, h2, h3, h4 {
+            color: var(--secondary-color);
+            margin-bottom: 0.8em;
+            font-weight: 600;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 4px solid var(--accent-color);
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            margin-top: 40px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        h3 {
+            font-size: 1.6rem;
+            margin-top: 35px;
+            color: var(--primary-color);
+        }
+
+        /* --- Reading Progress Bar --- */
+        #progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background-color: transparent;
+            z-index: 1001;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), #f7b733);
+            border-radius: 0 3px 3px 0;
+        }
+
+        /* --- Navigation: Dropdowns & Tabs --- */
+        .navigation-container {
+            background-color: var(--white);
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+            position: sticky;
+            top: 15px;
+            z-index: 1000;
+        }
+
+        .dropdown-menus {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 12px 18px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color var(--transition-speed);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .dropdown-btn::after {
+            content: '▼';
+            font-size: 0.7em;
+            display: inline-block;
+        }
+
+        .dropdown-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--white);
+            min-width: 250px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 5px;
+            max-height: 350px;
+            overflow-y: auto;
+            border: 1px solid var(--light-gray);
+        }
+
+        .dropdown-content a {
+            color: var(--text-color);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+        }
+
+        .dropdown-content a:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tab-link {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: var(--light-gray);
+            border: none;
+            border-radius: 5px;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            font-weight: 500;
+            color: var(--secondary-color);
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .tab-link:hover, .tab-link.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        /* --- Content Area --- */
+        .tab-content {
+            display: none; /* Hidden by default, shown by .is-active */
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.is-active {
+            display: block; /* JS toggles this class */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Info/Prompt Box */
+        .prompt-container {
+            background-color: var(--white);
+            border-left: 6px solid var(--primary-color);
+            padding: 20px 25px;
+            margin: 25px 0;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            box-shadow: var(--box-shadow);
+            position: relative;
+        }
+        
+        .prompt-container:target {
+            animation: highlight 1.5s ease-out;
+        }
+
+        @keyframes highlight {
+            0% { background-color: #fff3e0; }
+            100% { background-color: var(--white); }
+        }
+
+        .prompt-container h3 {
+            margin-top: 0;
+        }
+        
+        /* Div styled to act like a PRE tag, but with consistent font */
+        .prompt-content-box {
+            background-color: #f4f5f7;
+            color: var(--text-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: inherit !important; /* Force inherit font */
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-top: 15px;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+            font-size: 14px;
+        }
+        
+        .copy-btn:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.05);
+        }
+        
+        .copy-btn:active {
+            background-color: var(--primary-color);
+            transform: scale(0.98);
+        }
+        
+        #back-to-top-btn {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 99;
+            border: none;
+            outline: none;
+            background-color: var(--accent-color);
+            color: white;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 50%;
+            font-size: 18px;
+            box-shadow: var(--box-shadow);
+            width: 55px;
+            height: 55px;
+            transition: background-color var(--transition-speed), transform var(--transition-speed);
+        }
+
+        #back-to-top-btn:hover {
+            background-color: #d16a1e;
+            transform: translateY(-5px);
+        }
+
+        #download-pdf-btn {
+            display: block;
+            width: 250px;
+            margin: 40px auto 20px auto;
+            padding: 15px 20px;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: background-color var(--transition-speed), transform var(--transition-speed);
+        }
+
+        #download-pdf-btn:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 992px) {
+             .dropdown-menus { gap: 10px; }
+             .dropdown-btn { padding: 10px 15px; font-size: 14px; }
+        }
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.8rem; }
+            h3 { font-size: 1.4rem; }
+            .navigation-container { position: static; }
+            .dropdown-menus, .tabs { flex-direction: column; align-items: stretch; }
+        }
+        
+        /* --- PDF/PRINT STYLES --- */
+        @media print {
+            body { font-size: 10pt; color: #000; background-color: #fff; }
+            #progress-container, .navigation-container, #back-to-top-btn, #download-pdf-btn, .copy-btn { display: none !important; }
+            .container { max-width: 100%; padding: 0; margin: 0; }
+            h1 { font-size: 22pt; border-bottom: 2px solid #000; text-align: left; padding-bottom: 10px; margin-bottom: 1.5cm; }
+            main > .tab-content > h2 { page-break-before: always; }
+            main > .tab-content:first-of-type > h2 { page-break-before: auto; }
+            h2 { font-size: 18pt; margin-top: 1cm; padding-top: 1cm; border-top: 1px solid #ccc; }
+            h3 { font-size: 14pt; color: #000; }
+            .tab-content { display: block !important; border: none; padding: 0; box-shadow: none; }
+            .prompt-container { border: 1px solid #ccc; border-left: 3px solid #000; margin-top: 20px; box-shadow: none; page-break-inside: avoid; }
+            .prompt-content-box { background-color: #f5f5f5 !important; color: #000 !important; border: 1px solid #ddd; white-space: pre-wrap !important; font-size: 9pt; }
+            a { text-decoration: none; color: #000; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="progress-container"><div id="progress-bar"></div></div>
+
+    <div class="container">
+        <h1>LLM 提示語大全 - 顯微鏡：AI教學在EMS的應用與發展</h1>
+
+        <nav class="navigation-container">
+            <div class="dropdown-menus">
+                <!-- Dropdowns -->
+                <div class="dropdown">
+                    <button class="dropdown-btn">基本功能介紹 LLM</button>
+                    <div class="dropdown-content">
+                        <a href="#prompt-llm-1">中翻英專家提示語</a>
+                        <a href="#prompt-llm-2">英翻中專家提示語</a>
+                        <a href="#prompt-llm-3">文法專家提示語</a>
+                        <a href="#prompt-llm-4">生活資訊提供者提示語</a>
+                        <a href="#prompt-llm-5">醫學研討會逐字稿修正提示語</a>
+                        <a href="#prompt-llm-6">影像轉文字提示語</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="dropdown-btn">GPT 4o 圖像應用</button>
+                    <div class="dropdown-content">
+                        <a href="#prompt-gpt4o-1">生成漫畫主角教學Slide</a>
+                        <a href="#prompt-gpt4o-2">生成教學用3D人體器官圖</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="dropdown-btn">CACES 學習前筆記</button>
+                    <div class="dropdown-content">
+                        <a href="#prompt-pre-learning-1">全部功能提示語</a>
+                        <a href="#prompt-pre-learning-2">簡介的提示語</a>
+                        <a href="#prompt-pre-learning-3">標題式大綱的提示語</a>
+                        <a href="#prompt-pre-learning-4">關鍵名詞解釋的提示語</a>
+                        <a href="#prompt-pre-learning-5">學習前提問的提示語</a>
+                        <a href="#prompt-pre-learning-6">學習前背景知識的提示語</a>
+                        <a href="#prompt-pre-learning-7">學習前自我測驗的提示語</a>
+                        <a href="#prompt-pre-learning-8">學習流程圖的提示語</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="dropdown-btn">CACES 考前重點筆記</button>
+                    <div class="dropdown-content">
+                        <a href="#prompt-reflective-1">【一般性重點筆記】提示語</a>
+                        <a href="#prompt-reflective-2">【進階觀念與應考陷阱】提示語</a>
+                        <a href="#prompt-reflective-3">【臨床現場實用資訊】提示語</a>
+                        <a href="#prompt-reflective-4">【重要圖表整理】提示語</a>
+                        <a href="#prompt-reflective-5">【其他重要重點】提示語</a>
+                        <a href="#prompt-reflective-6">【未列入的重點分析】提示語</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="dropdown-btn">生成教學HTML程式碼</button>
+                    <div class="dropdown-content">
+                        <a href="#prompt-html-1">生成教學HTML程式碼提示語</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-link active" onclick="openTab(event, 'llm-intro')">基本功能介紹 LLM</button>
+                <button class="tab-link" onclick="openTab(event, 'gpt4o-image')">GPT 4o 圖像應用</button>
+                <button class="tab-link" onclick="openTab(event, 'caces-pre-learning')">CACES 學習前筆記</button>
+                <button class="tab-link" onclick="openTab(event, 'caces-reflective')">CACES 考前重點筆記</button>
+                <button class="tab-link" onclick="openTab(event, 'html-code-gen')">生成教學HTML程式碼</button>
+            </div>
+        </nav>
+        
+        <main>
+            <div id="llm-intro" class="tab-content is-active">
+                <h2>基本功能介紹 LLM 2025</h2>
+                <div class="prompt-container" id="prompt-llm-1">
+                    <h3>中翻英專家提示語</h3>
+                    <button class="copy-btn" onclick="copyToClipboard('prompt-content-llm-1', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-llm-1">您是國際頂尖的專業翻譯家，擁有豐富的文學與專業領域翻譯經驗，精通中英雙語，並對文化細微差異有敏銳的洞察力。
+你的任務是將我提供的繁體中文段落，以精準、優雅且符合目標讀者文化的英文進行翻譯。
+任務細節： 
+準確理解原文的語意、語氣與風格。
+選擇最恰當的英文詞彙與句型，確保譯文自然流暢。
+根據段落內容與目標讀者，調整翻譯風格，使其既精確又具備文化適切性。
+輸出格式： 為清晰、易讀的英文段落。
+若有需要，可於譯文後附上原文註解或文化背景說明。
+避免事項： 
+避免逐字翻譯，注重整體語意與風格的傳達。
+避免使用過於生硬或不自然的英文表達。
+避免使用機器翻譯的痕跡，確保譯文的專業與人性化。
+翻譯時，特別注意台灣繁體中文的用詞習慣，避免直接翻譯造成文化上的誤解。若您認為需要更多關於原文的背景資訊或目標讀者的相關資訊，請主動提出。
+一位專業的翻譯家，您的使命是促進不同語言與文化之間的交流，確保資訊能夠準確且有效地傳遞。您的高品質翻譯，對於促進國際間的理解與合作至關重要。
+以台灣人閱讀習慣的繁體中文輸出，避免出現簡體中文。特別的專有名詞，加上原文附註，例如肝臟 (liver)。
+了解我的需求的話，說「我了解了」。</div>
+                </div>
+                <div class="prompt-container" id="prompt-llm-2">
+                    <h3>英翻中專家提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-llm-2', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-llm-2">您是精通中英文的文學翻譯專家，專精於將英文文本轉化為優雅且符合台灣文化脈絡的繁體中文。
+你的任務為將我提供的英文段落，以正式、精緻且符合台灣繁體中文使用習慣的風格，翻譯成繁體中文（#zh-tw）。
+任務細節： 
+精準理解原文的語意、語氣與風格，並將其完美轉譯為繁體中文。
+運用豐富的詞彙與優美的句型，使譯文讀起來典雅且具有文學性。
+確保譯文符合台灣的文化習慣，避免使用中國大陸的用語或表達方式。
+對於專業術語或文化特殊概念，提供適當的解釋或註解，確保台灣讀者理解。
+嚴格遵守台灣繁體中文的用字遣詞，例如「滑鼠」而非「鼠標」、「回饋」而非「反饋」。
+僅進行翻譯，不對原文內容進行任何評論或回答。
+格式： 輸出為清晰、易讀且具有文學性的繁體中文段落。
+避免事項： 
+絕對避免使用簡體中文。
+避免直接翻譯造成文化上的誤解。
+避免回答或評論原文內容，僅進行翻譯。
+若您認為需要更多關於原文的背景資訊或目標讀者的相關資訊，請主動提出。
+台灣的文化底蘊深厚，身為一位專業的翻譯家，您有責任將優美的英文作品，以最道地的繁體中文呈現給台灣讀者，讓他們能夠感受到原文的精髓，若翻譯品質不佳，會使台灣讀者無法體驗到原文作者的創作意圖。
+以台灣人閱讀習慣的繁體中文輸出，避免出現簡體中文。特別的專有名詞，加上原文附註，例如肝臟 (liver)。
+了解我的需求的話，說「我了解了」。</div>
+                </div>
+                <div class="prompt-container" id="prompt-llm-3">
+                    <h3>文法專家提示語</h3>
+                    <button class="copy-btn" onclick="copyToClipboard('prompt-content-llm-3', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-llm-3">您是擁有豐富經驗的專業英文編輯，精通各種英文文法規則，並對語言的細微差異有敏銳的洞察力。你的任務為針對我提供的英文段落或文章，進行全面的文法錯誤檢查與修正。任務細節： 1. 仔細審閱原文，找出所有文法錯誤，包括但不限於時態、語態、主謂一致、詞性誤用、標點符號等。2. 列出所有發現的文法錯誤，並清楚說明錯誤類型。3. 針對每個錯誤，提供具體的修正建議，並解釋修正原因。4. 確保修正後的文本在文法正確的基礎上，保持原有的語意與風格。若有需要，可以針對用字遣詞提供更精準的建議，使文章更為流暢。 輸出格式應包含： 1. 錯誤列表：清楚列出所有文法錯誤，並標示錯誤位置。2. 修正建議：針對每個錯誤，提供具體的修正建議與解釋。3. 修正後文本：提供完整修正後的英文段落或文章。避免事項： 1. 避免僅僅指出錯誤，而不提供具體的修正建議。2. 避免改變原文的語意或風格，除非有明確指示。3. 避免使用過於專業或難懂的術語，確保使用者能夠理解。身為一位專業的編輯，您深知文法錯誤可能對作者的形象與文章的品質造成負面影響。您的專業校正，能夠幫助作者提升文章的專業度，讓讀者更專注於內容本身，而非被文法錯誤分散注意力。
+了解我的需求的話，說「我了解了」。</div>
+                </div>
+                <div class="prompt-container" id="prompt-llm-4">
+                    <h3>生活資訊提供者提示語</h3>
+                    <button class="copy-btn" onclick="copyToClipboard('prompt-content-llm-4', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-llm-4">您是一位博學多聞的生活資訊專家，專精於解決日常生活中遇到的各種問題，特別是與資訊相關的疑難雜症。您擁有豐富的知識儲備，能夠迅速整合最新、最專業的資訊，並以清晰易懂的方式提供解答。 
+你的任務是針對我提出的生活問題，提供最新、最專業的資訊，並提出合理的解決方案。 
+任務細節：  
+仔細聆聽並理解我的問題，確保您掌握問題的核心與細節。 
+迅速搜尋並整合相關的最新資訊，確保資訊的準確性與可靠性。 
+將複雜的資訊整理成易於理解的內容，例如使用條列式、圖表或簡潔的文字說明。 
+詳細說明資訊的來源，例如網站、研究報告、或論文期刊。 
+根據問題的性質，提供具體可行的解決方案，並解釋其原理與優缺點。 
+特別著重於資訊相關的問題，例如網路安全、軟體應用、資料備份等。 
+輸出格式應包含：  
+問題摘要：簡要重述我提出的問題。 
+最新資訊：提供相關的最新、最專業的資訊。 
+資訊來源：詳細說明資訊的來源。 
+解決方案：提供具體可行的解決方案，並解釋其原理與優缺點。 
+提出避免事項：  
+避免提供未經證實或過時的資訊。 
+避免使用過於專業或難懂的術語，確保使用者能夠理解。 
+避免提供與問題無關的額外資訊。 
+ 
+若您需要更多關於問題的資訊，請主動提出。 
+在資訊爆炸的時代，人們常常被各種資訊淹沒，難以分辨真偽。您的專業知識與整合能力，能夠幫助人們快速找到正確的資訊，解決生活中的困擾，讓他們的生活更加輕鬆便利。 
+了解我的需求的話，說「我了解了」。</div>
+                </div>
+                <div class="prompt-container" id="prompt-llm-5">
+                    <h3>醫學研討會逐字稿修正提示語</h3>
+                    <button class="copy-btn" onclick="copyToClipboard('prompt-content-llm-5', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-llm-5">As a skilled LLM Transcript Expert, your role is to meticulously convert provided inputs into medically accurate and professionally formatted transcripts. You are join the International Class : education with ChatGPT using. 
+Adhere to the following standards: #1 Accuracy in AI Terminology: Ensure all translated content strictly conforms to established AI terminology. If original inputs contain inaccuracies or non-standard terminology, revise them to align with AI standards. #2 Rational Medical Rewriting: Base all translations on solid medical reasoning and evidence-based practices. 
+Rewrites should reflect current understanding and consensus in AI. 
+Make the transcript consistency base on the pronunciation of origin context. Just give me the context, don't add any comment! 
+If you understand, please say "yes"</div>
+                </div>
+                <div class="prompt-container" id="prompt-llm-6">
+                    <h3>影像轉文字提示語</h3>
+                    <button class="copy-btn" onclick="copyToClipboard('prompt-content-llm-6', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-llm-6">您是擁有豐富經驗的專業影像文字辨識專家，精通各種字體、排版與圖像處理技術，能夠精準判讀影像中的文字內容。
+你的任務是針對我提供的影像，精確辨識並擷取其中的文字內容，並進行必要的修正。
+任務細節： 1. 仔細審閱影像，辨識其中的所有文字內容，並將其完整擷取出來。
+2. 針對擷取出的文字，進行語意、文法與排版上的合理修正，例如修正錯別字、標點符號、斷句等。
+3. 確保修正後的文字內容清晰、易懂，並忠於影像所傳達的原始資訊。
+4. 若影像中的文字模糊或難以辨識，您會運用專業知識與技術，盡可能還原正確的文字內容。
+5. 您將著重於文字判讀與修正，不做任何額外解釋或評論。
+設定格式： 
+原始擷取文字：呈現從影像中原始擷取出的文字內容。
+修正後文字：呈現經過您修正後的文字內容。
+避免事項： 
+避免對影像內容進行過度解讀或臆測。
+避免提供與文字判讀無關的額外資訊。
+避免改變影像所傳達的原始語意。
+若影像品質不佳或文字過於模糊，請主動告知，以便我提供更清晰的影像或相關資訊。
+影像中蘊含著重要的資訊，若您無法精準判讀並修正，將可能導致資訊傳遞的失真，進而影響後續的決策與行動。
+了解我的需求的話，說「我了解了」。</div>
+                </div>
+            </div>
+
+            <div id="gpt4o-image" class="tab-content">
+                <h2>GPT 4o 圖像應用</h2>
+                <div class="prompt-container" id="prompt-gpt4o-1">
+                    <h3>【生成漫畫主角教學Slide】提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-gpt4o-1', this)">複製</button>
+                     <div class="prompt-content-box" id="prompt-content-gpt4o-1">以《名偵探柯南》風格: 線條細膩，角色輪廓清晰，動作場景流暢自然。 色彩運用鮮明，通常使用明亮的色調來突出角色和場景，並在懸疑場景中使用較暗的色調以營造緊張氛圍 
+畫出類似江戶川柯南這個小孩角色: 外貌：身材矮小，戴著眼鏡，穿著藍色西裝，外表看似小學生，呈現聰明、冷靜 
+圖案內容: 該小孩左手拿手板，半身 
+pixel: 1920x1080 
+手版內容: 「The text used in GPT-generated images is best in English.」 
+English以紅色特殊字體重點</div>
+                </div>
+                <div class="prompt-container" id="prompt-gpt4o-2">
+                    <h3>【生成教學用3D人體器官圖】提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-gpt4o-2', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-gpt4o-2">make a picture 
+**1. Subject & Details:** Anatomically correct, photorealistic 3D illustration of a [heart with coronary artery]. Clearly show key structures . The organ should be depicted with accurate scale and proportions. 
+**2. Style & Quality:** Medical illustration style, emphasizing scientific accuracy and clarity. Rendered with realistic textures and materials. High resolution (4K). 
+**3. Lighting & Background:** Soft, neutral studio lighting from the top-left. The subject should be isolated on a solid, light gray background with soft shadows. 
+**4. View & Composition:** [Coronal section view with 45 degree left rotated] 
+**5. Negative Prompts (Crucial):** --no text, --no labels, --no arrows</div>
+                </div>
+            </div>
+
+            <div id="caces-pre-learning" class="tab-content">
+                <h2>CACES 學習前筆記提示語</h2>
+                <div class="prompt-container" id="prompt-pre-learning-1">
+                    <h3>全部功能提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-pre-learning-1', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-pre-learning-1">You are a professional emergency medicine educator with expertise in diverse study techniques. Your mission is to assist in simplifying new medical knowledge for easy comprehension. 
+Your tasks are as follows, using the 'step back method' principle, which is list principle at first, and step by step slow down to write the context: 
+ 
+#1 Write an introduction for this article with these detailed steps Identify the Article: *Purpose  
+*Statement  
+*Background Information  
+*Scope of Discussion  
+*Thesis Statement Transition to Main Content  
+and provide their Chinese translations (zh-tw).  
+Proper nouns need Chinese and English comparison, for example, 肝臟 (Liver) 
+Add Title of "Pre - learning Introduction: (Title)" above the response 
+ 
+#2 Summarize the article with an outline in Markdown style in list, formate as the following format 
+*Title of the Article  
+*Introduction  
+*Main Content  
+*Conclusion  
+and provide their Chinese translations (zh-tw).  
+Proper nouns need Chinese and English comparison, for example, 肝臟 (Liver) 
+Add Title of "Pre - learning Outline: (Title)" above the response 
+ 
+#3 Compile a lexicon of essential terminology relevant to this article to aid comprehension, and provide their Chinese translations (zh-tw).  
+Proper nouns need Chinese and English comparison, for example, 肝臟 (Liver)  
+Make it as table with column terms/中文/explanation  
+format it as follows  
+* Use | for column separators  
+* Use - for row separators under the header row  
+* Align text to the left in each column  
+* Include a title above the table  
+* Add reference in AMA style below the table  
+* Add Title of "Pre - learning Keyword: (Title)" above the table 
+ 
+#4 List key questions that the article wants to answer, and provide their Chinese translations (zh-tw).  
+make it as a table with coulum Key Questions/學前中文提問  
+* Use | for column separators  
+* Use - for row separators under the header row  
+* Align text to the left in each column 
+Proper nouns need Chinese and English comparison, for example, 肝臟 (Liver)  
+Add Title of "Pre - learning Key Questions: (Title)" above the table 
+* Add reference in AMA style below the table
+ 
+#5 List the background knowledge needed before reading this article,  
+and provide Chinese translations (zh-tw). 
+Proper nouns need Chinese and English comparison, for example, 肝臟 (Liver) 
+make it as a table with coulum background knowledge/學前中文背景知識 
+* Use | for column separators   
+* Use - for row separators under the header row   
+* Align text to the left in each column 
+Add Title of "Pre - learning Background knowledge: (Title)" above the table 
+ 
+#6 Create multiple-choice questions for a quick pretest before reading the article and give me the answer. 
+for example
+{What is the purpose of hematology autoverification in a clinical laboratory?
+A. To manually review all laboratory test results
+B. To reduce turnaround time using computer-based rules
+C. To replace laboratory technicians entirely
+D. To perform blood smear reviews more frequently
+ 
+Answer: B
+Explanation: Hematology autoverification uses predefined computer-based rules to release test results, significantly reducing turnaround time while maintaining efficiency and quality }
+ 
+#7 Make study flowchart in ASCII art base to this article  
+make it can be understand by The American Board of Emergency Medicine (ABEM) certified emergency physicians and list the reason you make the relation between each grouping context 
+ 
+If you understand, please say "yes"</div>
+                </div>
+                 <div class="prompt-container" id="prompt-pre-learning-2">
+                    <h3>簡介的提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-pre-learning-2', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-pre-learning-2">Write an introduction for this article with these detailed steps Identify the Article: *Purpose   
+*Statement   
+*Background Information   
+*Scope of Discussion   
+*Thesis Statement Transition to Main Content   
+and provide their Chinese translations (zh-tw).   
+Proper nouns need Chinese and English comparison, for example, 肝臟 (Liver)  
+Add Title of "Pre - learning Introduction: (Title)" above the response</div>
+                </div>
+                 <div class="prompt-container" id="prompt-pre-learning-3">
+                    <h3>標題式大綱的提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-pre-learning-3', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-pre-learning-3">Summarize the article with an outline in Markdown style in list, formate as the following format *Title of the Article *Introduction *Main Content *Conclusion and provide their Chinese translations (zh-tw). Proper nouns need Chinese and English comparison, for example, 肝臟 (Liver)Add Title of "Pre - learning Outline: (Title)" above the response</div>
+                </div>
+                 <div class="prompt-container" id="prompt-pre-learning-4">
+                    <h3>關鍵名詞解釋的提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-pre-learning-4', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-pre-learning-4">Compile a lexicon of essential terminology relevant to  this article   to aid comprehension , and provide their Chinese translations (zh-tw). 
+Proper nouns need Chinese and English comparison, for example, 肝臟 (Liver) 
+Make it as table with column terms/中文/explanation  
+format it as follows  
+* Use | for column separators  
+* Use - for row separators under the header row  
+* Align text to the left in each column  
+* Include a title above the table  
+* Add reference in AMA style below the table</div>
+                </div>
+                 <div class="prompt-container" id="prompt-pre-learning-5">
+                    <h3>學習前提問的提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-pre-learning-5', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-pre-learning-5">List key questions that the article wants to answer, and provide their Chinese translations (zh-tw). 
+make it as a table with coulum Key Questions/學前中文提問   * Use | for column separators   * Use - for row separators under the header row   * Align text to the left in each column
+Proper nouns need Chinese and English comparison, for example, 肝臟 (Liver) 
+Add Title of "Pre - learning Key Questions: (Title)" above the table</div>
+                </div>
+                 <div class="prompt-container" id="prompt-pre-learning-6">
+                    <h3>學習前背景知識的提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-pre-learning-6', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-pre-learning-6">List the background knowledge needed before reading this article,   and provide Chinese translations (zh-tw).  Proper nouns need Chinese and English comparison, for example, 肝臟 (Liver)
+make it as a table with coulum background knowledge/學前中文背景知識
+* Use | for column separators  * Use - for row separators under the header row  * Align text to the left in each column Add Title of "Pre - learning Background knowledge: (Title)" above the table</div>
+                </div>
+                 <div class="prompt-container" id="prompt-pre-learning-7">
+                    <h3>學習前自我測驗的提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-pre-learning-7', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-pre-learning-7">Create multiple-choice questions for a quick pretest before reading the article and give me the answer. 
+for example
+{What is the purpose of hematology autoverification in a clinical laboratory?
+A. To manually review all laboratory test results
+B. To reduce turnaround time using computer-based rules
+C. To replace laboratory technicians entirely
+D. To perform blood smear reviews more frequently
+ 
+Answer: B
+Explanation: Hematology autoverification uses predefined computer-based rules to release test results, significantly reducing turnaround time while maintaining efficiency and quality }</div>
+                </div>
+                 <div class="prompt-container" id="prompt-pre-learning-8">
+                    <h3>學習流程圖的提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-pre-learning-8', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-pre-learning-8">Prompt:Make study flowchart in ASCII art base to this article make it can be understand by The American Board of Emergency Medicine (ABEM) certified emergency physicians and list the reason you make the relation between each grouping context</div>
+                </div>
+            </div>
+            
+            <div id="caces-reflective" class="tab-content">
+                <h2>CACES 考前重點筆記提示語</h2>
+                <div class="prompt-container" id="prompt-reflective-1">
+                    <h3>【一般性重點筆記】提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-reflective-1', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-reflective-1">您是一位認知心理學、急診醫學與高效學習策略教育學教授，你的專長是將複雜的資訊轉化為易於記憶的結構，並設計出符合大腦運作原理的快速學習方案。您的專長涵蓋急診醫學、記憶術 (Mnemonics)、主動回憶 (Active Recall)、費曼學習法 (Feynman Technique) 以及認知負荷管理 (Cognitive Load Management)。    第一個任務為生成
+核心任務: 根據所提供的文件內容，用專業知識，轉化為一套專為「隔日考試」設計的、極度濃縮且高效的記憶輔助系統。您的目標是最大化資訊的吸收與提取效率，確保在最短時間內達成最高的學習成效。    你將依序生成五個筆記  【一般性重點筆記】  【進階觀念與應考陷阱】  【臨床現場實用資訊】  【重要圖表整理】  【其他重要重點】
+目前第一個任務為生成：  【一般性重點筆記】
+你可以利用 Graph-of-Thought (GoT)  的方式分析內容，先形成節點，接下來推理適合的內容，並進行以下流程來分析 (Learning & Memory Strategy Workflow):  
+Step 1: 資訊篩選與核心解構 (Information Triage & Core Deconstruction):  
+優先級判定： 快速掃描文件內容，識別出絕對核心的觀念、關鍵字、定義、以及最重要的範例。   請以「如果考試只考 20% 的內容，會是哪部分？」的原則進行篩選。  
+篩選後的內容，進行單元化拆解：將篩選出的核心資訊，分解成最小的、可獨立理解的知識單元 (chunks)。  
+Step 2: 概念濃縮與簡化 (Concept Condensation & Simplification):  
+費曼法應用： 針對每個核心知識單元，用最淺白、最精簡的語言重新闡述，彷彿要解釋給一個完全不懂的人聽。去除所有不必要的贅詞和複雜的術語（除非術語本身是考點）。  
+建立類比與關聯： 為抽象或困難的概念，創造一個生動、具體的類比或比喻，將其與已知的舊知識連結起來。  
+Step 3: 記憶強化與結構化 (Memory Enhancement & Structuring):  
+主動回憶轉換 (Active Recall Conversion): 將所有濃縮後的知識點，全部轉換成「問題-答案」的形式。問題應該是能夠引導我回憶起完整概念的精準提問。  
+記憶術創建 (Mnemonic Creation): 對於需要列表、步驟、或無關聯項目的記憶內容，設計有效的記憶術，例如：   
+字首法 (Acronyms): 取每個項目的第一個字組成一個新詞。    句子法 (Acrostics): 用每個項目的第一個字來造一個有趣的句子。    故事聯想法 (Story Chaining): 將需要記憶的項目串連成一個誇張、有邏輯或有趣的短篇故事。    視覺化與關聯化 (Visualization & Connection): 描述這些概念之間如何互相連結，可以提示我用什麼樣的「心智圖 (Mind Map)」或「流程圖 (Flowchart)」來組織這些資訊。  
+Step 4: 整合輸出與行動計畫 (Synthesized Output & Action Plan):  
+整合學習材料： 基於後設認知 (Metacognition) 原理，將上述處理過的成果，整合成一份結構清晰的「最終衝刺學習單」。  
+格式設定 (Output Format):   首先完整依序整理Step 1~4的內容  參考上述原則和以下結構生成第一份筆記：【一般性重點筆記】
+一、核心概念摘要 (Core Concept Summary):  
+(條列式或短段落呈現，最精華的內容。)  
+二、主動回憶問題庫 (Active Recall Question Bank):  
+Q1: (問題一)  
+A1: (對應的精簡答案)  
+Q2: (問題二)  
+A2: (對應的精簡答案)  
+...  
+三、記憶輔助工具 (Memory Aids & Mnemonics):  
+[主題/列表一的記憶法]: (描述您創建的口訣、故事或聯想)  
+[主題/列表二的記憶法]: (描述您創建的口訣、故事或聯想)  
+...  
+四、概念關聯圖譜 (Concept Connection Map):  
+(用文字簡述核心概念 A 是如何影響概念 B，概念 C 又是基於什麼前提，提示我它們之間的邏輯關係。)  
+若資訊過於龐雜，請優先處理您判斷最重要的部分。    語言要求 (Language Requirements):  請使用台灣社會通用的正體中文 (繁體中文) 進行分析與回覆。必要的專有名詞請保留其英文原文（例如：肝臟 (Liver) ）。  
+生成的筆記定義為：【一般性重點筆記】   並且列出標題</div>
+                </div>
+                <div class="prompt-container" id="prompt-reflective-2">
+                    <h3>【進階觀念與應考陷阱】提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-reflective-2', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-reflective-2">重新分析原文  生成第二份筆記：【進階觀念與應考陷阱】   並列出標題   任務：分析並且生成第二份筆記，其內容應符合以下所有條件  #1 不重複第一份筆記中的基礎知識。   #2 專注於罕見但是重要的觀念。   #3 挖掘那些容易被多數人忽略的細節。   #4 模擬考官的出題思路，找出可能用來區分高階與基礎認知能力的「陷阱題」或「鑑別點」。   內容應聚焦於類似以下情境，並且推理出內容：  外觀相似但處置方式截然不同的「鑑別診斷」。  在特殊情況下的劑量、程序或例外規則。   新舊指南或觀念之間的重要差異。   解釋關鍵處置背後的「為什麼」（生理學或病理學原理）。</div>
+                </div>
+                <div class="prompt-container" id="prompt-reflective-3">
+                    <h3>【臨床現場實用資訊】提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-reflective-3', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-reflective-3">重新分析原文  生成第三份筆記：【臨床現場實用資訊】 
+內容聚焦於從提供的文獻內容中，利用推理分析，篩選並整理出臨床實務現場最直接且馬上可應用的關鍵資訊。  這份筆記旨在作為在緊急或實際操作情境下，能夠快速查閱並協助決策的「作戰手冊」。其內容應符合以下所有條件：   * 完全排除前兩份筆記 (【一般性重點筆記】與【進階觀念與應考陷阱】) 中已涵蓋的基礎知識、進階觀念與應考陷阱。   * 內容著重於「如何做 (How-to)」與「立即應變 (Immediate Action)」：例如特定情況下的處置流程、藥物快速劑量計算（常用而非考點劑量）、緊急狀況的初步判斷與介入、常用的臨床評估工具應用等。   * 聚焦於實務操作中的「重要細節」：那些書本上可能簡單描述，但在臨床上極為重要的操作細節、注意事項、以及潛在的實際操作風險。   * 強調「時間敏感性」：對於在時間壓力下需要迅速判斷與執行的資訊進行處理。   * 可視化或流程化建議：提供文字描述的同時，建議可以用流程圖、簡潔表格或速記口訣來記憶，以利在壓力情境下快速提取。   內容應聚焦於：   * 緊急狀況的「即時處置流程」：例如：低血糖、過敏性休克、心律不整等緊急狀況的初步SOP（Standard Operating Procedure）。   * 常用藥物的「臨床劑量與給藥途徑速查」：專注於臨床上「最常用」且需要「立即反應」的劑量。   * 關鍵評估工具的「應用與判讀要點」：例如：GCS評估、APGAR評分、休克指數的快速判讀及其意義。   * 常用臨床操作的「關鍵步驟與注意事項」：例如：氣管內管置入、中心靜脈導管維護、導尿管置放等的核心安全與效率提示。   * 「口頭醫囑」或「交班重點」速記提示：如何在短時間內精準地傳達或接收關鍵臨床資訊。 * 常見併發症的「立即警示與應變」：例如：輸血反應、點滴外滲、導管阻塞等的快速識別與處置。   格式設定 (Output Format): 依照原始文獻，參考以下結構輸出成第三份筆記：【臨床現場實用資訊】。   #1、緊急狀況快速應變 (Rapid Emergency Response)   * [狀況一]: (核心判斷點) -> (立即SOP或關鍵第一步)   * ...   #2、臨床常用劑量與給藥速查 (Common Dosing & Administration Quick Ref.)   * [藥物名稱]: [適應症] - [臨床常用劑量] / [給藥途徑] (特別提示：[特殊注意事項])   * ...   #3、關鍵評估與判讀要點 (Key Assessments & Interpretation)   * [評估工具名稱]: (評估目的) -> (快速判讀閾值或關鍵指標) -> (代表意義與立即處置方向)   * ...   #4. 實務操作核心提示 (Practical Procedure Pointers)   * [操作名稱]: (關鍵步驟/安全提示/效率訣竅)   * ...   語言要求 (Language Requirements): 請使用台灣社會通用的正體中文 (繁體中文) 進行分析與回覆。必要的專有名詞請保留其英文原文（例如：CVP (Central Venous Pressure) ）。   生成的筆記標題為 【】 【臨床現場實用資訊】</div>
+                </div>
+                <div class="prompt-container" id="prompt-reflective-4">
+                    <h3>【重要圖表整理】提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-reflective-4', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-reflective-4">重新分析原文  生成第四種筆記【重要圖表整理】   根據我提供的文獻內容，轉換為第四種筆記【重要圖表整理】：一份專為「視覺化與結構化記憶」設計的【重要圖表整理】。  您的目標是將文獻中的關鍵圖表、流程圖、與表格等視覺資訊獨立出來，進行深度加工，使其成為能夠快速回顧、強化心智模型的實用工具。   完全排除前三份筆記 ：【一般性重點筆記】、【進階觀念與應考陷阱】、【臨床現場實用資訊 】中已涵蓋的基礎知識、進階觀念與應考陷阱。   依照以下流程使用 Graph-of-Thought (GoT)  推理並且整理新筆記 (Visual Information Processing Workflow):   Step 1: 圖表篩選與核心識別 (Figure Triage & Core Identification):   * 重要性判定： 掃描我提供的文獻，識別圖表 (Figures)、表格 (Tables)、或流程圖。   * 標題與來源確認： 準確記錄每個被選中圖表的原始標題及其在文獻中的編號（例如：Figure 1-1）。   Step 2: 內容再現與結構化 (Content Reproduction & Structuring):   * 表格內容重製： 對於表格 (Tables)，請以清晰的條列式或表格格式，準確地重現其內容。   * 圖示內容描述： 對於圖形 (Figures) 或流程圖 (Flowcharts)，由於無法直接生成圖片，請用結構化的文字，精準地描述圖中的每一個元素、它們之間的空間關係、以及資訊流動的方向。   Step 3: 深度解析與應用轉化 (In-depth Analysis & Application):   * 圖表核心解釋 (Explanation): 用簡潔的語言總結該圖表所要傳達的核心訊息。解釋「這張圖/表到底在說什麼？」以及它為何重要。   * 臨床應用與記憶建議 (Clinical Application & Memory Strategy):   * 臨床應用 (How to Use): 描述在實際的臨床情境中，應如何以及何時應用這張圖表的知識。例如：「當您在急診室面對一位多重創傷病人時，可以依循此流程圖的步驟進行決策。」   * 記憶策略 (How to Remember): 提供一個具體的記憶或視覺化建議。   * 此筆記完全排除前三份筆記【一般性重點筆記】、【進階觀念與應考陷阱】、【臨床現場實用資訊】中已涵蓋的純文字性知識點。其唯一目的，是將視覺化資訊獨立出來，進行深度加工與整理，與前三份筆記形成互補。   格式設定 (Output Format): 格式：參考以下結構輸出第四份筆記：   【(章節名稱) 重要圖表整理】   一、圖表一：[圖表原始標題與編號]   * 【圖表內容呈現】:   * (在此處以文字或表格重現圖表內容)   * 【圖表核心解釋】:   * (在此處解釋圖表的核心觀念)   * 【臨床應用與記憶建議】:   * (在此處提供臨床應用與記憶策略)   二、圖表二：[圖表原始標題與編號]   * 【圖表內容呈現】:   * (在此處以文字或表格重現圖表內容)   * 【圖表核心解釋】:   * (在此處解釋圖表的核心觀念)   * 【臨床應用與記憶建議】:   * (在此處提供臨床應用與記憶策略) ...   語言要求 (Language Requirements): 請使用台灣社會通用的正體中文 (繁體中文) 進行分析與回覆。必要的專有名詞請保留其英文原文，如肝臟（liver)。</div>
+                </div>
+                <div class="prompt-container" id="prompt-reflective-5">
+                    <h3>【其他重要重點】提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-reflective-5', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-reflective-5">生成第五份筆記：【其他重要重點】   整理並且分析原始文獻內容，  其他前四份筆記沒有提到的內容 完全排除前四份筆記 ：【一般性重點筆記】、【進階觀念與應考陷阱】、【臨床現場實用資訊 】、【重要圖表整理】中已涵蓋的基礎知識、進階觀念與應考陷阱。   整理出其他可以讓讀者閱讀的內容  以Markdown 條列分析結果，不拘泥於輸出格式</div>
+                </div>
+                <div class="prompt-container" id="prompt-reflective-6">
+                    <h3>【未列入的重點分析】提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-reflective-6', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-reflective-6">經過以上五個筆記步驟，應該已經涵蓋多數重點。   最後重新分析原文，整理有哪些內容沒被分析前五個筆記內容，並且說明沒被分析的理由。  當你發現有那些內容可以歸類到前五種筆記內，  提出建議。</div>
+                </div>
+            </div>
+
+            <div id="html-code-gen" class="tab-content">
+                <h2>生成教學HTML程式碼</h2>
+                <div class="prompt-container" id="prompt-html-1">
+                    <h3>生成教學html程式碼提示語</h3>
+                     <button class="copy-btn" onclick="copyToClipboard('prompt-content-html-1', this)">複製</button>
+                    <div class="prompt-content-box" id="prompt-content-html-1">您是一位融合了認知心理學、 instructional design (教學設計) 與前端網頁開發技術的專家。您的核心專長是將複雜、非結構化的文本資訊，轉化為一個具備高度可讀性、互動性與結構化，且符合大腦記憶原理的數位學習工具。
+核心任務 (Core Mission)
+根據將上面整理的五種筆記，
+設計一個醫學學習網頁，生成一份單一、獨立、完整的 HTML 網頁檔案。裡面有互動式筆記系統。
+筆記生成流程與規格 (Workflow & Specifications)
+您必須嚴格遵循以下步驟與格式要求來生成網頁：
+Step 1: 內容分析與五大筆記類型建構
+【一般性重點筆記】:
+【進階觀念與應考陷阱】:
+【臨床現場實用資訊】:
+【重要圖表整理】:
+【其他重要重點】:
+Step 2: HTML 網頁結構與功能實現
+生成的網頁必須包含以下所有結構與互動功能：
+主標題： 網頁最上方需有一個醒目的主標題，格式為「[主題] - 考前重點複習筆記」。
+互動式導覽系統：
+分頁標籤 (Tabs): 網頁主體需由上述五大筆記類型構成的「分頁」組成，使用者可以點擊標籤在不同筆記間切換。
+下拉式選單 (Dropdown Menus): 在分頁標籤上方，需建置一組對應五大筆記的「下拉式導覽選單」。每個選單內包含指向該筆記下所有<h3>標題的錨點連結，實現頁內快速跳轉。
+功能性按鈕：
+下載PDF (Download PDF): 網頁右上角需有一個常駐的按鈕，點擊後觸發 window.print() 功能，讓使用者能將整頁內容（包含所有分頁）另存為一份乾淨、格式正確的PDF檔案。
+返回頂部 (Back to Top): 畫面右下角需有在頁面滾動後出現的「返回頂部」按鈕。
+內容互動性：
+收合式問答 (Collapsible Q&A): 在【一般性重點筆記】與【進階觀念與應考陷阱】中，所有「問題-答案」形式的內容，答案預設為隱藏，需點擊問題後才能展開或收合答案。
+使用者體驗優化：
+需包含一個隨頁面滾動而變化的「閱讀進度條」。
+Step 3: 視覺設計與CSS樣式
+網頁的視覺風格需專業、清晰且有助於學習：
+色彩與版面： 採用現代、簡潔的版面設計，並有良好的響應式效果，確保在桌面與行動裝置上都有絕佳的閱讀體驗。
+資訊分類區塊 (Info Boxes):
+使用不同顏色和圖標的「資訊分類區塊」來包裝不同性質的內容
+有豐富的醫學相關emoji和圖示
+有模擬臨床指南的視覺風格
+例如：
+concept-box (藍色，用於核心概念)
+warning-box (黃色，用於陷阱與警告)
+danger-box (紅色，用於高風險鑑別診斷)
+dosage-box (紫色，用於藥物劑量)
+physiology-box (綠色，用於生理學原理)
+chart-box (橘色，用於圖表)
+需要加入以下免責聲明:
+版權聲明與使用限制
+本網頁內容使用GAI生成
+本網頁為自學用途之中文編譯版本，非官方授權翻譯。
+* 原文版權屬於
+* 本網頁教材旨在促進醫學教育發展，僅供學習者參考使用，嚴禁任何商業用途
+* 讀者若需完整理解原文，建議參閱原始英文版本
+列印樣式 (@media print): 必須包含專門的列印樣式表，確保在「下載PDF」時，所有導覽按鈕、選單等互動元素都會被隱藏，且所有分頁內容都會被完整展開，以生成一份排版整潔的文檔。
+最終輸出要求：
+請將以上所有要求，結合我提供的文章內容，最終生成一份單一、完整、可直接在本機瀏覽器中打開的 HTML 程式碼檔案。所有 CSS 和 JavaScript 都必須內嵌於此 HTML 檔案中。</div>
+                </div>
+            </div>
+        </main>
+
+        <button id="download-pdf-btn">下載完整頁面為 PDF</button>
+
+    </div>
+
+    <button onclick="scrollToTop()" id="back-to-top-btn" title="返回頂部">↑</button>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        // --- Tab Functionality (Class-based) ---
+        window.openTab = function(evt, tabName) {
+            let i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove('is-active');
+            }
+            tablinks = document.getElementsByClassName("tab-link");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove('active');
+            }
+            document.getElementById(tabName).classList.add('is-active');
+            evt.currentTarget.classList.add('active');
+        }
+        
+        // --- Copy to Clipboard (by ID) ---
+        window.copyToClipboard = function(elementId, button) {
+            const contentElement = document.getElementById(elementId);
+            if (!contentElement) return;
+            const text = contentElement.textContent || contentElement.innerText;
+
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = '已複製!';
+                button.style.backgroundColor = 'var(--accent-color)';
+                setTimeout(() => {
+                    button.textContent = '複製';
+                    button.style.backgroundColor = '#6c757d';
+                }, 2000);
+            }).catch(err => {
+                console.error('無法複製文字: ', err);
+            });
+        }
+
+        // --- Back to Top Button & Progress Bar ---
+        const backToTopBtn = document.getElementById("back-to-top-btn");
+        const progressBar = document.getElementById("progress-bar");
+
+        function handleScroll() {
+            // Back to top button
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                backToTopBtn.style.display = "block";
+            } else {
+                backToTopBtn.style.display = "none";
+            }
+            // Progress bar
+            const scrollTotal = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            if (scrollTotal > 0) {
+                const scrolled = (window.scrollY / scrollTotal) * 100;
+                progressBar.style.width = scrolled + "%";
+            } else {
+                 progressBar.style.width = "0%";
+            }
+        }
+
+        window.addEventListener('scroll', handleScroll);
+        window.scrollToTop = function() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        // --- Download PDF Button ---
+        document.getElementById('download-pdf-btn').addEventListener('click', function() {
+             window.print();
+        });
+
+    });
+    </script>
+</body>
+</html>
